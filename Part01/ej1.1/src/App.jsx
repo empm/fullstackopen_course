@@ -1,32 +1,23 @@
 /**
- * 1.5: Información del Curso paso 5
- * Llevemos los cambios un paso más allá. 
- * Cambia el curso y sus partes a un solo objeto JavaScript. 
- * Arregla todo lo que se rompa.
+ * 1.3: Información del Curso, paso 3
+ * Avancemos para usar objetos en nuestra aplicación. 
+ * Modifica las definiciones de las variables del componente App 
+ * de la siguiente manera y también refactoriza la aplicación para que siga funcionando:
  */
 
 
 const Header = (props) => {
   return (
-      <h1>{props.course.name}</h1>
+      <h1>{props.course}</h1>
   );
 };
 
 const Content = (props) => {
   return (
     <>
-      <Part 
-        part={props.course.parts[0].name} 
-        exercise={props.course.parts[0].exercises}
-        />
-      <Part
-        part={props.course.parts[1].name}
-        exercise={props.course.parts[1].exercises}
-        />
-      <Part
-        part={props.course.parts[2].name}
-        exercise={props.course.parts[2].exercises}
-        />
+      <Part part={props.part1.name} exercise={props.part1.exercises} />
+      <Part part={props.part2.name} exercise={props.part2.exercises} />
+      <Part part={props.part3.name} exercise={props.part3.exercises} />
     </>
   );
 };
@@ -44,36 +35,32 @@ const Total = (props) => {
     <>
       <p>
         Number of exercises{" "}
-        {props.course.parts[0].exercises + props.course.parts[1].exercises + props.course.parts[2].exercises}
+        {props.ex1.exercises + props.ex2.exercises + props.ex3.exercises}
       </p>
     </>
   );
 };
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
+  const course = 'Half Stack application development'
+  const part1 = {
+    name: 'Fundamentals of React',
+    exercises: 10
+  }
+  const part2 = {
+    name: 'Using props to pass data',
+    exercises: 7
+  }
+  const part3 = {
+    name: 'State of a component',
+    exercises: 14
   }
 
   return (
     <div>
       <Header course={course} />
-      <Content course={course} />
-      <Total course={course}/>
+      <Content part1={part1} exercise1={part1} part2={part2} exercise2={part2} part3={part3} exercise3={part3} />
+      <Total ex1={part1} ex2={part2} ex3={part3}/>
     </div>
   )
 }
