@@ -1,79 +1,50 @@
 /**
- * 1.4: Información del Curso paso 4
- * Coloca los objetos en un array. 
- * Modifica las definiciones de las variables de App de la siguiente forma y 
- * modifica las otras partes de la aplicación que sean necesarias para que continue funcionando:
+ * 1.6: unicafe, paso 1
+ * Como la mayoría de las empresas, Unicafe recopila comentarios de sus clientes. 
+ * Tu tarea es implementar una aplicación web para recopilar comentarios de los clientes. 
+ * 
+ * Solo hay tres opciones para los comentarios: good (bueno), neutral y bad(malo).
+ * La aplicación debe mostrar el número total de comentarios recopilados para cada categoría. 
+ * Ten en cuenta que tu aplicación debe funcionar solo durante una única sesión del navegador. 
+ * Una vez que se actualice la página, los comentarios recopilados pueden desaparecer.
  */
 
+import { use, useState } from "react"
 
-const Header = (props) => {
+// Empresa unicafe
+// Descomposicion
+const Boton = (props) => {
+  const handleClick = () => props.funcion(props.valor+1)
+
   return (
-      <h1>{props.course}</h1>
-  );
-};
-
-const Content = (props) => {
-  return (
-    <>
-      <Part 
-        part={props.parts[0].name} 
-        exercise={props.parts[0].exercises}
-      />
-      <Part
-        part={props.parts[1].name}
-        exercise={props.parts[1].exercises}
-      />
-      <Part
-        part={props.parts[2].name}
-        exercise={props.parts[2].exercises}
-      />
-    </>
-  );
-};
-
-const Part = (props) => {
-  return (
-    <>
-      <p>{props.part} {props.exercise}</p>
-    </>
-  );
-};
-
-const Total = (props) => {
-  return (
-    <>
-      <p>
-        Number of exercises{" "}
-        {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}
-      </p>
-    </>
-  );
-};
-
-const App = () => {
-  const course = 'Half Stack application development'
-  const parts = [
-    {
-      name: 'Fundamentals of React',
-      exercises: 10
-    },
-    {
-      name: 'Using props to pass data',
-      exercises: 7
-    },
-    {
-      name: 'State of a component',
-      exercises: 14
-    }
-  ]
-
+    <button onClick={handleClick}>{props.name}</button>
+  )
+}
+const Estadisticas = (props) => {
   return (
     <div>
-      <Header course={course} />
-      <Content parts={parts}/>
-      <Total parts={parts}/>
+      <p>{props.nombreEstadistica}: {props.valor}</p>
     </div>
   )
 }
 
-export default App;
+const App = () => {
+  const [contadorComentarioGood, setContadorGood] = useState(0)
+  const [contadorComentarioNeutral, setContadorNeutral] = useState(0)
+  const [contadorComentarioBad, setContadorBad] = useState(0)
+
+  return (
+    <div>
+      <h1>Give feedback</h1>
+      <Boton name='good' funcion={setContadorGood} valor={contadorComentarioGood}/>
+      <Boton name='neutral' funcion={setContadorNeutral} valor={contadorComentarioNeutral}/>
+      <Boton name='bad' funcion={setContadorBad} valor={contadorComentarioBad}/>
+      <h1>Statistics</h1>
+      <Estadisticas nombreEstadistica='good' valor={contadorComentarioGood} />
+      <Estadisticas nombreEstadistica='neutral' valor={contadorComentarioNeutral} />
+      <Estadisticas nombreEstadistica='bad' valor={contadorComentarioBad} />
+    </div>
+  )
+}
+
+export default App
