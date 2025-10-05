@@ -1,10 +1,6 @@
 /**
- * 1.8: unicafe, paso 3
- * Refactoriza tu aplicación para que la visualización de las estadísticas 
- * se extraiga en su propio componente Statistics. 
- * El estado de la aplicación debe permanecer en el componente raíz App.
- * 
- * Recuerda que los componentes no deben definirse dentro de otros componentes:
+ * 1.9: unicafe paso 4
+ * Cambia tu aplicación para mostrar estadísticas solo una vez que se hayan recopilado los comentarios.
  */
 
 import { use, useState } from "react"
