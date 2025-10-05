@@ -1,30 +1,21 @@
 /**
- * 1.6: unicafe, paso 1
- * Como la mayoría de las empresas, Unicafe recopila comentarios de sus clientes. 
- * Tu tarea es implementar una aplicación web para recopilar comentarios de los clientes. 
- * 
- * Solo hay tres opciones para los comentarios: good (bueno), neutral y bad(malo).
- * La aplicación debe mostrar el número total de comentarios recopilados para cada categoría. 
- * Ten en cuenta que tu aplicación debe funcionar solo durante una única sesión del navegador. 
- * Una vez que se actualice la página, los comentarios recopilados pueden desaparecer.
+ * 1.7: unicafe, paso 2
+ * Amplía tu aplicación para que muestre más estadísticas sobre los comentarios recopilados: 
+ * el número total de comentarios recopilados, 
+ * la puntuación promedio (buena: 1, neutral: 0, mala: -1) 
+ * y el porcentaje de comentarios positivos.
  */
 
 import { use, useState } from "react"
 
-// Empresa unicafe
-// Descomposicion
-const Boton = (props) => {
-  const handleClick = () => props.funcion(props.valor+1)
-
+const Boton = ({ handleClick, name }) => {
   return (
-    <button onClick={handleClick}>{props.name}</button>
+    <button onClick={handleClick}>{name}</button>
   )
 }
-const Estadisticas = (props) => {
+const Estadisticas = ({estadistica, valor}) => {
   return (
-    <div>
-      <p>{props.nombreEstadistica}: {props.valor}</p>
-    </div>
+    <p>{estadistica}: {valor}</p>
   )
 }
 
@@ -32,17 +23,42 @@ const App = () => {
   const [contadorComentarioGood, setContadorGood] = useState(0)
   const [contadorComentarioNeutral, setContadorNeutral] = useState(0)
   const [contadorComentarioBad, setContadorBad] = useState(0)
+  const [todosLosComentarios, setTodos] = useState(0)
+  const [average, setAverage] = useState(0)
+
+  const handleClickGood = () => { 
+    setContadorGood(contadorComentarioGood + 1) 
+    setTodos(todosLosComentarios + 1)
+    setAverage(average+1)
+  }
+  const handleClickNeutral = () => { 
+    setContadorNeutral(contadorComentarioNeutral + 1)
+    setTodos(todosLosComentarios + 1)
+    setAverage(average+0)
+  }
+  const handleClickBad = () => { 
+    setContadorBad(contadorComentarioBad + 1) 
+    setTodos(todosLosComentarios + 1)
+    setAverage(average-1)
+  }
+
+  const media = average / todosLosComentarios
+  const positive = ((contadorComentarioGood * 100) / todosLosComentarios)
 
   return (
     <div>
       <h1>Give feedback</h1>
-      <Boton name='good' funcion={setContadorGood} valor={contadorComentarioGood}/>
-      <Boton name='neutral' funcion={setContadorNeutral} valor={contadorComentarioNeutral}/>
-      <Boton name='bad' funcion={setContadorBad} valor={contadorComentarioBad}/>
+      <Boton name='good' handleClick={handleClickGood} />
+      <Boton name='neutral' handleClick={handleClickNeutral} />
+      <Boton name='bad' handleClick={handleClickBad} />
+
       <h1>Statistics</h1>
-      <Estadisticas nombreEstadistica='good' valor={contadorComentarioGood} />
-      <Estadisticas nombreEstadistica='neutral' valor={contadorComentarioNeutral} />
-      <Estadisticas nombreEstadistica='bad' valor={contadorComentarioBad} />
+      <Estadisticas estadistica='good' valor={contadorComentarioGood} />
+      <Estadisticas estadistica='neutral' valor={contadorComentarioNeutral} />
+      <Estadisticas estadistica='bad' valor={contadorComentarioBad} />
+      <Estadisticas estadistica='all' valor={todosLosComentarios} />
+      <Estadisticas estadistica='average' valor={media.toFixed(1)} />
+      <Estadisticas estadistica='positive' valor={positive.toFixed(1) + '%'}/> 
     </div>
   )
 }
