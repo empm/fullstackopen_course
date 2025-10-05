@@ -1,9 +1,10 @@
 /**
- * 1.7: unicafe, paso 2
- * Amplía tu aplicación para que muestre más estadísticas sobre los comentarios recopilados: 
- * el número total de comentarios recopilados, 
- * la puntuación promedio (buena: 1, neutral: 0, mala: -1) 
- * y el porcentaje de comentarios positivos.
+ * 1.8: unicafe, paso 3
+ * Refactoriza tu aplicación para que la visualización de las estadísticas 
+ * se extraiga en su propio componente Statistics. 
+ * El estado de la aplicación debe permanecer en el componente raíz App.
+ * 
+ * Recuerda que los componentes no deben definirse dentro de otros componentes:
  */
 
 import { use, useState } from "react"
