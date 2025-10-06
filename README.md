@@ -1,18 +1,18 @@
 # fullstackopen_course
-## Ejercicio 1.10 (Unicafe paso 5)
+## 📚 Ejercicio 1.10 — Unicafe paso 5
 
-> Enunciado clave:
-> Extrae dos componentes más:
->	•	Button para los botones de feedback.
->	•	StatisticLine para mostrar una única estadística (texto + valor).
+**Enunciado clave:**  
+Extrae dos componentes más:
 
-La aplicación usa múltiples StatisticLine dentro de Statistics. El estado sigue en App.  ￼
+- `Button`: para los botones de feedback.  
+- `StatisticLine`: para mostrar una sola estadística (texto + valor).
 
-## Lo importante a aprender:
-- Reutilización de componentes pequeños y especializados (Button, StatisticLine).
-- Cada componente tiene una única responsabilidad:
-    - Button → mostrar botón + manejar clic
-    - StatisticLine → mostrar solo un par texto + valor
+La aplicación debe usar múltiples `StatisticLine` dentro de `Statistics`. El estado sigue en `App`.
 
-- Simplificar Statistics al delegar la renderización de cada línea a StatisticLine. 
-- Mejor organización y legibilidad del código.
+**Lo esencial a aprender:**
+
+- Componentes pequeños y especializados con una sola responsabilidad.  
+- `Button` muestra un botón y ejecuta una función al hacer clic.  
+- `StatisticLine` muestra una sola línea de estadística.  
+- `Statistics` delega en `StatisticLine` la presentación de cada dato.  
+- Mejora de legibilidad y organización del código.
