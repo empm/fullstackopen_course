@@ -5,17 +5,24 @@
 
 import { use, useState } from "react"
 
+/* Componente Boton, funcion onClick + texto mostrado dentro del boton */
 const Boton = ({ handleClick, name }) => {
   return (
     <button onClick={handleClick}>{name}</button>
   )
 }
-const Estadisticas = ({estadistica, valor}) => {
-  return (
-    <p>{estadistica}: {valor}</p>
-  )
+
+/* Componente estadisticas, muestra un texto y un valor */
+const Statistics = ({ estadistica, valor }) => {
+  return (<p>{estadistica}: {valor}</p>)
 }
 
+/* Componente de uso explusivo cuando no hay estadisticas */
+const SinStatistics = ({ estadistica, valor }) => {
+  return (<p>No feedback given</p>)
+}
+
+/* Componente main - logica de negocio */
 const App = () => {
   const [contadorComentarioGood, setContadorGood] = useState(0)
   const [contadorComentarioNeutral, setContadorNeutral] = useState(0)
@@ -23,41 +30,56 @@ const App = () => {
   const [todosLosComentarios, setTodos] = useState(0)
   const [average, setAverage] = useState(0)
 
-  const handleClickGood = () => { 
-    setContadorGood(contadorComentarioGood + 1) 
+  const handleClickGood = () => {
+    setContadorGood(contadorComentarioGood + 1)
     setTodos(todosLosComentarios + 1)
-    setAverage(average+1)
+    setAverage(average + 1)
   }
-  const handleClickNeutral = () => { 
+  const handleClickNeutral = () => {
     setContadorNeutral(contadorComentarioNeutral + 1)
     setTodos(todosLosComentarios + 1)
-    setAverage(average+0)
+    setAverage(average + 0)
   }
-  const handleClickBad = () => { 
-    setContadorBad(contadorComentarioBad + 1) 
+  const handleClickBad = () => {
+    setContadorBad(contadorComentarioBad + 1)
     setTodos(todosLosComentarios + 1)
-    setAverage(average-1)
+    setAverage(average - 1)
   }
 
   const media = average / todosLosComentarios
   const positive = ((contadorComentarioGood * 100) / todosLosComentarios)
 
-  return (
-    <div>
-      <h1>Give feedback</h1>
-      <Boton name='good' handleClick={handleClickGood} />
-      <Boton name='neutral' handleClick={handleClickNeutral} />
-      <Boton name='bad' handleClick={handleClickBad} />
+  /* Si hay comentarios, que muestre todo, si no, mostrar SinStatics */
+  if (todosLosComentarios != 0) {
+    return (
+      <div>
+        <h1>Give feedback</h1>
+        <Boton name='good' handleClick={handleClickGood} />
+        <Boton name='neutral' handleClick={handleClickNeutral} />
+        <Boton name='bad' handleClick={handleClickBad} />
 
-      <h1>Statistics</h1>
-      <Estadisticas estadistica='good' valor={contadorComentarioGood} />
-      <Estadisticas estadistica='neutral' valor={contadorComentarioNeutral} />
-      <Estadisticas estadistica='bad' valor={contadorComentarioBad} />
-      <Estadisticas estadistica='all' valor={todosLosComentarios} />
-      <Estadisticas estadistica='average' valor={media.toFixed(1)} />
-      <Estadisticas estadistica='positive' valor={positive.toFixed(1) + '%'}/> 
-    </div>
-  )
+        <h1>Statistics</h1>
+        <Statistics estadistica='good' valor={contadorComentarioGood} />
+        <Statistics estadistica='neutral' valor={contadorComentarioNeutral} />
+        <Statistics estadistica='bad' valor={contadorComentarioBad} />
+        <Statistics estadistica='all' valor={todosLosComentarios} />
+        <Statistics estadistica='average' valor={media.toFixed(1)} />
+        <Statistics estadistica='positive' valor={positive.toFixed(1) + '%'} />
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h1>Give feedback</h1>
+        <Boton name='good' handleClick={handleClickGood} />
+        <Boton name='neutral' handleClick={handleClickNeutral} />
+        <Boton name='bad' handleClick={handleClickBad} />
+
+        <h1>Statistics</h1>
+        <SinStatistics />
+      </div>
+    )
+  }
 }
 
 export default App
