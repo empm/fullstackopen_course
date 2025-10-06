@@ -1,11 +1,11 @@
 # fullstackopen_course
-1.11*: unicafe, paso 6
-Muestra las estadísticas en una tabla HTML.
+## 📚 Ejercicio 1.11 — Unicafe paso 6 *(opcional / avanzado)*
 
-Recuerda mantener la consola abierta en todo momento. Si ves esta advertencia en tu consola:
-Entonces realiza las acciones necesarias para que la advertencia desaparezca. Intenta buscar en Google el mensaje de error si te quedas atascado.
+**Enunciado clave:**  
+Presenta las estadísticas dentro de una **tabla HTML** para una disposición más clara y estructurada.
 
-Una fuente típica de un error Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist. es la extensión de Chrome. 
-Intenta ir a chrome://extensions y deshabilitarlas una por una y luego actualizar la página de la aplicación React; el error debería desaparecer eventualmente.
+**Lo esencial a aprender:**
 
-¡Asegúrate de que a partir de ahora no veas ninguna advertencia en tu consola!
+- Uso de etiquetas `<table>`, `<tbody>`, `<thead>`, `<tr>`, `<td>` dentro de JSX.  
+- Renderizar componentes en celdas de tablas (`<StatisticLine />` dentro de `<td>`).  
+- Mejora visual y estructura tabular de los datos.
