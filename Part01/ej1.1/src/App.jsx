@@ -18,9 +18,7 @@ const Statistics = ({ estadistica, valor }) => {
 }
 
 /* Componente de uso explusivo cuando no hay estadisticas */
-const SinStatistics = ({ estadistica, valor }) => {
-  return (<p>No feedback given</p>)
-}
+const SinStatistics = () => { return (<p>No feedback given</p>) }
 
 /* Componente main - logica de negocio */
 const App = () => {
