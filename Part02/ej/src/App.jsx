@@ -1,52 +1,41 @@
-import Course from "./Course"
+import { useState } from 'react'
+
+const MostrarPersona = ({array}) => <p>Nombre: {array}</p>
 
 const App = () => {
-const courses = [
-    {
-      name: 'Half Stack application development',
-      id: 1,
-      parts: [
-        {
-          name: 'Fundamentals of React',
-          exercises: 10,
-          id: 1
-        },
-        {
-          name: 'Using props to pass data',
-          exercises: 7,
-          id: 2
-        },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3
-        },
-        {
-          name: 'Redux',
-          exercises: 11,
-          id: 4
-        }
-      ]
-    }, 
-    {
-      name: 'Node.js',
-      id: 2,
-      parts: [
-        {
-          name: 'Routing',
-          exercises: 3,
-          id: 1
-        },
-        {
-          name: 'Middlewares',
-          exercises: 7,
-          id: 2
-        }
-      ]
-    }
-  ]
-  
-  return <Course courseArray={courses} />
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas' }
+  ])
+  const [newName, setNewName] = useState('')
+
+  const handleChange = (e) => {
+    setNewName(e.target.value)
+  }
+  const verPersona = (e) => {
+    // No quiero que se actualice
+    e.preventDefault()
+    const newPerson = { name: newName } // esta mierda es lo que hacia que no saliera
+    /* Yo estaba añadiendo como si fuera un array y no un objeto con estructura name: */
+    setPersons(persons.concat(newPerson)) // se usa concat y no push porque push modifica el original (un estado) y concat hace copia
+  }
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={verPersona}>
+        <div>
+          name: <input value={newName} onChange={handleChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map(e => 
+        <MostrarPersona key={e.name} array={e.name}/>
+      )}
+    </div>
+  )
 }
 
 export default App
