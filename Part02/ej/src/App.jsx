@@ -1,20 +1,27 @@
 
 const Course = ({ courseArray }) => {
-  console.log("Parametro: ", courseArray);
+  const parts = courseArray.parts // Creo un array solo de las partes
+  const exercises = parts.map(e => e.exercises) // Creo un array solo del valor de los ejercicios
+  console.log("Ex: ", exercises);
+  const total = exercises.reduce((sum, n) => sum + n) // Devuelve sum y lo guarda en total
+  // Creo una funcion reduce donde va guardando en sum el valor de cada indice n. 
+
+  /* Esto es lo mismo aunque mas "pesado" que usando reduce
   let sum = 0
-  courseArray.parts.map(e => sum += e.exercises)
-  console.log("myA: ", sum);
+  const total2 = parts.map(e => sum += e.exercises)
+  console.log("sum: ", sum)
+  */
 
   return (
     <>
       <Header courseHeader={courseArray} />
       <Content courseText={courseArray} />
-      <h3>Total of {sum} exercises</h3>
+      <h3>Total of {total} exercises</h3>
     </>
   )
 }
 const Header = ({ courseHeader }) => {
-  console.log("Desde header: ", courseHeader);
+  // console.log("Desde header: ", courseHeader);
 
   return (
     <>
@@ -23,7 +30,7 @@ const Header = ({ courseHeader }) => {
   )
 }
 const Content = ({ courseText }) => {
-  console.log("Desde Content: ", courseText);
+  //console.log("Desde Content: ", courseText);
   const valoresPart = courseText.parts
 
   return (
