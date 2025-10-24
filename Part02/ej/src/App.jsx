@@ -1,32 +1,36 @@
 
 const Course = ({ courseArray }) => {
   console.log("Parametro: ", courseArray);
+  let sum = 0
+  courseArray.parts.map(e => sum += e.exercises)
+  console.log("myA: ", sum);
 
   return (
     <>
       <Header courseHeader={courseArray} />
-      <Content courseText={courseArray}/>
+      <Content courseText={courseArray} />
+      <h3>Total of {sum} exercises</h3>
     </>
   )
 }
 const Header = ({ courseHeader }) => {
   console.log("Desde header: ", courseHeader);
-  
+
   return (
     <>
       <h1>{courseHeader.name}</h1>
     </>
   )
 }
-const Content = ({courseText}) => {
+const Content = ({ courseText }) => {
   console.log("Desde Content: ", courseText);
   const valoresPart = courseText.parts
 
   return (
     <>
-      {valoresPart.map(e => 
-          <Part key={e.id} coursePart={e}/>
-        )
+      {valoresPart.map(e =>
+        <Part key={e.id} coursePart={e} />
+      )
       }
     </>
   )
@@ -59,6 +63,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Rdux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
