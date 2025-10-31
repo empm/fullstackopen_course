@@ -3,6 +3,26 @@ import { useState } from 'react'
 // Componente para visualizar lista de telefono
 const MostrarPersona = ({ name, phone }) => <p>{name} - {phone}</p>
 
+const Search = ({ newSearchValue, handleChangeSearch}) => {
+  return (
+    <input value={newSearchValue} type="search" name="search" id="search" placeholder="Name..." onChange={handleChangeSearch} />
+  )
+}
+
+const Form = ({ addPerson, newNameValue, newPhoneValue, handleChangeName, handleChangePhone }) => {
+  return (
+    <form onSubmit={addPerson}>
+      <div>
+        Name: <input value={newNameValue} onChange={handleChangeName} /> <br />
+        Phone: <input value={newPhoneValue} onChange={handleChangePhone} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
 const App = () => {
   // List
   const [persons, setPersons] = useState([
@@ -20,7 +40,7 @@ const App = () => {
   const handleChangeName = (e) => {
     setNewName(e.target.value)
   }
-        
+
   // form phone
   const handleChangePhone = (e) => {
     setNewPhone(e.target.value)
@@ -28,19 +48,17 @@ const App = () => {
 
   const handleChangeSearch = (e) => {
     setNewSearch(e.target.value)
-    // console.log("NewSearch: ", newSearch);
-    // console.log("Filter: ", persons.filter(p => p.name.toLowerCase().includes(newSearch)));
   }
 
   // Funcion mostrar toda la lista de personas o las filtradas
-  const contactToShow = !newSearch 
-  ? persons
-  : persons.filter(p => p.name.toLowerCase().includes(newSearch))
+  const contactToShow = !newSearch
+    ? persons
+    : persons.filter(p => p.name.toLowerCase().includes(newSearch))
 
   // Funcion onSubmit
   const addPerson = (e) => {
     e.preventDefault()
-    const newPerson = { name: newName, number: newPhone, id: persons.length + 1}
+    const newPerson = { name: newName, number: newPhone, id: persons.length + 1 }
 
     if (persons.some(p => p.name === newPerson.name)) {
       alert(`${newPerson.name} ya está añadido a la agenda`)
@@ -54,17 +72,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <input value={newSearch} type="search" name="search" id="search" placeholder="Name..." onChange={handleChangeSearch} />
+      <Search newSearchValue={newSearch} handleChangeSearch={handleChangeSearch}/>
       <h2>Add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          Name: <input value={newName} onChange={handleChangeName} /> <br />
-          Phone: <input value={newPhone} onChange={handleChangePhone} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Form addPerson={addPerson} newNameValue={newName} newPhoneValue={newPhone} handleChangeName={handleChangeName} handleChangePhone={handleChangePhone} />
       <h2>Numbers</h2>
       {contactToShow.map(e =>
         <MostrarPersona key={e.id} name={e.name} phone={e.number} />
