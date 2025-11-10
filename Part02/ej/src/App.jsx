@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 // Componente para visualizar lista de telefono
 const MostrarPersona = ({ name, phone }) => <p>{name} - {phone}</p>
 
-const Search = ({ newSearchValue, handleChangeSearch}) => {
+const Search = ({ newSearchValue, handleChangeSearch }) => {
   return (
     <input value={newSearchValue} type="search" name="search" id="search" placeholder="Name..." onChange={handleChangeSearch} />
   )
@@ -24,14 +25,7 @@ const Form = ({ addPerson, newNameValue, newPhoneValue, handleChangeName, handle
 }
 
 const App = () => {
-  // List
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
-
+  const [persons, setPersons] = useState([]) // Creamos el array de personas (db)
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [newSearch, setNewSearch] = useState('')
@@ -51,6 +45,15 @@ const App = () => {
   }
 
   // Funcion mostrar toda la lista de personas o las filtradas
+  const hook = () => {
+    axios
+      .get('http://localhost:3002/persons')
+      .then(res => {
+        setPersons(res.data)
+      })
+  }
+  useEffect(hook, [])
+
   const contactToShow = !newSearch
     ? persons
     : persons.filter(p => p.name.toLowerCase().includes(newSearch))
@@ -72,7 +75,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Search newSearchValue={newSearch} handleChangeSearch={handleChangeSearch}/>
+      <Search newSearchValue={newSearch} handleChangeSearch={handleChangeSearch} />
       <h2>Add a new</h2>
       <Form addPerson={addPerson} newNameValue={newName} newPhoneValue={newPhone} handleChangeName={handleChangeName} handleChangePhone={handleChangePhone} />
       <h2>Numbers</h2>
