@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import api from './services/api'
 
 // Componente para visualizar lista de telefono
 const MostrarPersona = ({ name, phone }) => <p>{name} - {phone}</p>
@@ -46,15 +47,15 @@ const App = () => {
     setNewSearch(e.target.value)
   }
 
-  // Funcion mostrar toda la lista de personas o las filtradas
+  // Funcion que guarda el array que devuelve `getAll()` en el componente `persons`.
   const hook = () => {
-    axios
-      .get(endpoint)
-      .then(res => {
-        setPersons(res.data)
-      })
+    api.getAll()
+    .then(data => setPersons(data))
   }
   useEffect(hook, [])
+
+  // Esta es la misma sintaxis que la linea anterior
+  // useEffect(() => api.getAll().then(data => setPersons(data)))
 
   const contactToShow = !newSearch
     ? persons
@@ -63,7 +64,7 @@ const App = () => {
   // Funcion onSubmit
   const addPerson = (e) => {
     e.preventDefault()
-    const newPerson = { name: newName, number: newPhone, id: persons.length + 1}
+    const newPerson = { name: newName, number: newPhone, id: persons.length + 1 }
     // el id: podríamos evitarlo, pero prefiero que se formatee
 
     if (persons.some(p => p.name === newPerson.name)) {
