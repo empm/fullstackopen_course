@@ -25,10 +25,12 @@ const Form = ({ addPerson, newNameValue, newPhoneValue, handleChangeName, handle
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([]) // Creamos el array de personas (db)
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [newSearch, setNewSearch] = useState('')
+
+  const endpoint = 'http://localhost:3002/persons'
 
   // form name
   const handleChangeName = (e) => {
@@ -47,7 +49,7 @@ const App = () => {
   // Funcion mostrar toda la lista de personas o las filtradas
   const hook = () => {
     axios
-      .get('http://localhost:3002/persons')
+      .get(endpoint)
       .then(res => {
         setPersons(res.data)
       })
@@ -61,12 +63,19 @@ const App = () => {
   // Funcion onSubmit
   const addPerson = (e) => {
     e.preventDefault()
-    const newPerson = { name: newName, number: newPhone, id: persons.length + 1 }
+    const newPerson = { name: newName, number: newPhone, id: persons.length + 1}
+    // el id: podríamos evitarlo, pero prefiero que se formatee
 
     if (persons.some(p => p.name === newPerson.name)) {
       alert(`${newPerson.name} ya está añadido a la agenda`)
     } else {
-      setPersons(persons.concat(newPerson))
+      // post para añadir nueva persona
+      axios
+        .post(endpoint, newPerson)
+        .then(res => {
+          setPersons(persons.concat(newPerson))
+          console.log("Add person + info: ", res.data);
+        })
     }
     setNewName('')
     setNewPhone('')

@@ -1,19 +1,39 @@
-Creamos un nuevo hook para almacenar el objeto de personas. 
+Creo una nueva variable
 ```jsx
-  const [persons, setPersons] = useState([]) /
+const endpoint = 'http://localhost:3002/persons'
 ```
 
-Antes de la condicion de busqueda usamos useEffect y llamamos con axios
-al server de la db
+Al get, le cambio la url por el valor de `endpoint`
 
+Creo un post para añadir a una nueva persona
 ```jsx
-  const hook = () => {
-    axios
-      .get('http://localhost:3002/persons')
-      .then(res => {
-        setPersons(res.data)
-      })
+   axios
+        .post(endpoint, newPerson)
+        .then(res => {
+          setPersons(persons.concat(newPerson))
+          console.log("Add person + info: ", res.data);
+        })
+```
+
+Funcion completa:
+```jsx
+const addPerson = (e) => {
+    e.preventDefault()
+    const newPerson = { name: newName, number: newPhone, id: persons.length + 1}
+    // el id: podríamos evitarlo, pero prefiero que se formatee
+
+    if (persons.some(p => p.name === newPerson.name)) {
+      alert(`${newPerson.name} ya está añadido a la agenda`)
+    } else {
+      // post para añadir nueva persona
+      axios
+        .post(endpoint, newPerson)
+        .then(res => {
+          setPersons(persons.concat(newPerson))
+          console.log("Add person + info: ", res.data);
+        })
+    }
+    setNewName('')
+    setNewPhone('')
   }
-  useEffect(hook, [])
   ```
-  
