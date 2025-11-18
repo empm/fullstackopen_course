@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import api from './services/api'
 
 // Componente para visualizar lista de telefono
-const MostrarPersona = ({ name, phone }) => <p>{name} - {phone}</p>
+const MostrarPersona = ({ name, phone, handleDelete }) => <p>{name} - {phone} <button onClick={handleDelete}>delete</button></p>
 
-const Search = ({ newSearchValue, handleChangeSearch }) => {
-  return (
-    <input value={newSearchValue} type="search" name="search" id="search" placeholder="Name..." onChange={handleChangeSearch} />
-  )
-}
+// Componente formulario de busqueda
+const Search = ({ newSearchValue, handleChangeSearch }) => <input value={newSearchValue} type="search" name="search" id="search" placeholder="Name..." onChange={handleChangeSearch} />
 
+// Componentes formulario añadir a persona
 const Form = ({ addPerson, newNameValue, newPhoneValue, handleChangeName, handleChangePhone }) => {
   return (
     <form onSubmit={addPerson}>
@@ -31,56 +28,77 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
   const [newSearch, setNewSearch] = useState('')
 
-  const endpoint = 'http://localhost:3002/persons'
-
   // form name
-  const handleChangeName = (e) => {
-    setNewName(e.target.value)
-  }
+  const handleChangeName = (e) => setNewName(e.target.value)
 
   // form phone
-  const handleChangePhone = (e) => {
-    setNewPhone(e.target.value)
-  }
+  const handleChangePhone = (e) => setNewPhone(e.target.value)
 
-  const handleChangeSearch = (e) => {
-    setNewSearch(e.target.value)
-  }
+  // form search
+  const handleChangeSearch = (e) => setNewSearch(e.target.value)
 
-  // Funcion que guarda el array que devuelve `getAll()` en el componente `persons`.
-  const hook = () => {
+  // GET
+  const hookGet = () => {
     api.getAll()
-    .then(data => setPersons(data))
+      .then(data => setPersons(data))
   }
-  useEffect(hook, [])
-
-  // Esta es la misma sintaxis que la linea anterior
-  // useEffect(() => api.getAll().then(data => setPersons(data)))
+  useEffect(hookGet, [])
 
   const contactToShow = !newSearch
     ? persons
     : persons.filter(p => p.name.toLowerCase().includes(newSearch))
 
-  // Funcion onSubmit
+  // Funcion onSubmit add person
   const addPerson = (e) => {
     e.preventDefault()
-    const newPerson = { name: newName, number: newPhone, id: persons.length + 1 }
-    // el id: podríamos evitarlo, pero prefiero que se formatee
 
-    if (persons.some(p => p.name === newPerson.name)) {
-      alert(`${newPerson.name} ya está añadido a la agenda`)
-    } else {
-      // post para añadir nueva persona
-      axios
-        .post(endpoint, newPerson)
-        .then(res => {
-          setPersons(persons.concat(newPerson))
-          console.log("Add person + info: ", res.data);
+    const newPerson = { name: newName, number: newPhone }
+
+    const buscarPorNombre = persons.some(p => p.name === newPerson.name)
+    const buscarPorTelefono = persons.some(p => p.number === newPerson.number)
+    const obtenerPersona = persons.find(p => p.name === newPerson.name)
+
+    // Si tiene el mismo nombre
+    // TODO: que el nombre y el telefono sea de la misma persona
+    if (buscarPorNombre && !buscarPorTelefono) {
+
+      // Si tiene distinto telefono
+      
+        if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
+          api.modifyPhone(obtenerPersona.id, newPerson)
+          .then(updatedPerson => {
+          // Actualizar el estado con la persona modificada
+          setPersons(
+            persons.map(p =>
+              p.id === personaExistente.id ? updatedPerson : p
+            )
+          )
         })
+        }
+      
+    } else {
+      api.addNew(newPerson)
+        .then(p => setPersons(persons.concat(p)))
     }
     setNewName('')
     setNewPhone('')
   }
+
+  // Funcion onClick delete person
+  const deletePerson = (p) => {
+    console.log("Objeto persona: ", p)
+    console.log("Nombre : ", p.name)
+    console.log("Id : ", p.id)
+
+    if (window.confirm("Do you want delete " + p.name + "?")) {
+      // Eliminar del backen
+      api.deletePerson(p.id)
+        .then(res => console.log("Persona eliminada: ", res))
+      // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
+      setPersons(persons.filter(per => per.id !== p.id))
+    }
+  }
+
 
   return (
     <div>
@@ -90,7 +108,7 @@ const App = () => {
       <Form addPerson={addPerson} newNameValue={newName} newPhoneValue={newPhone} handleChangeName={handleChangeName} handleChangePhone={handleChangePhone} />
       <h2>Numbers</h2>
       {contactToShow.map(e =>
-        <MostrarPersona key={e.id} name={e.name} phone={e.number} />
+        <MostrarPersona key={e.id} name={e.name} phone={e.number} handleDelete={() => deletePerson(e)} />
       )}
     </div>
   )

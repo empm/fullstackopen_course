@@ -1,58 +1,41 @@
-# 2.13: La Agenda Telefónica paso 8
-> Extrae el código que maneja la comunicación con el backend en su propio módulo siguiendo el ejemplo mostrado anteriormente en esta parte del material del curso.
+# 2.14: La Agenda Telefónica paso 9
 
-1. Creamos el archivo `src/services/api.js`, se puede llamar `persons.js` 
-2. Creamos las dos funcions `GET` y `POST`
+Metodo en `api`:
 
 ```jsx
-import axios from "axios";
-
-const endpoint = 'http://localhost:3002/persons'
-
-const getAll = () => {
-    const req = axios.get(endpoint)
+const deletePerson = (id) => {
+    const req = axios.delete(`${endpoint}/${id}`)
     return req.then(res => res.data)
 }
-
-const addNew = obj => {
-    const req = axios.post(endpoint, obj)
-    return req.then(res => res.data)
-}
-export default {getAll, addNew}
 ```
 
-3. En el componente `App` modificamos las funciones
-
-> GET
+En Mostrar persona, añadimos un boton para eliminar cada una de las personas.
+Cada persona tendra un boton para ser eliminada
 
 ```jsx
-  const hook = () => {
-    api.getAll()
-    .then(data => setPersons(data))
+const MostrarPersona = ({ name, phone, handleDelete }) => <p>{name} - {phone} <button onClick={handleDelete}>delete</button></p>
+```
+
+Este boton recibe una función por parametro
+
+```jsx
+  const deletePerson = (p) => {
+
+    console.log("Objeto persona: ", p)
+    console.log("Nombre : ", p.name)
+    console.log("Id : ", p.id)
+
+    if (window.confirm("Do you want delete " + p.name + "?")) {
+      // Eliminar del backen
+      api.deletePerson(p.id)
+        .then(res => console.log("Persona eliminada: ", res))
+      // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
+      setPersons(persons.filter(per => per.id !== p.id))
+    }
   }
-  useEffect(hook, [])
 ```
 
 > [!TIP]
-> Cuando usaba el `then` estaba intentando usar data.data en vez solo data.
+> Eliminamos tambien a la persona dentro del hook asi se refresque y ya no aparezca
 
-Si no tuviera la función en otro archivo la función sería:
-
-```jsx
-axios
-    .get(baseURL)
-    .then(res => res.data)
-```
-
-Pero como res ya está devolviendo el valor, no hace falta la notación punto.
-
----
-> POST
-
-```jsx
-axios
-    .post(endpoint, newPerson)
-    .then(res => {
-        setPersons(persons.concat(newPerson))
-    })
-```
+Y por ultimo le pasamos a la funcion el objeto personas para eliminar por id

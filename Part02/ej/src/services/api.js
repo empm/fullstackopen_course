@@ -11,12 +11,21 @@ const getAll = () => {
 }
 
 // 2. Add new person
-const addNew = obj => {
+const addNew = (obj) => {
     const req = axios.post(endpoint, obj)
     return req.then(res => res.data)
 }
 
-// 3. Update telephone...
+// 3. Delete a person
+const deletePerson = (id) => {
+    const req = axios.delete(`${endpoint}/${id}`)
+    return req.then(res => res.data)
+}
 
+// 4. Modify person's phone
+const modifyPhone = (id, obj) => {
+    const req = axios.put(`${endpoint}/${id}`, obj)
+    return req.then(res => res.data)
+}
 
-export default {getAll, addNew}
+export default {getAll, addNew, deletePerson, modifyPhone}
