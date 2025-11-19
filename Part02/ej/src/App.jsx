@@ -55,33 +55,30 @@ const App = () => {
     const newPerson = { name: newName, number: newPhone }
 
     const buscarPorNombre = persons.some(p => p.name === newPerson.name)
-    const buscarPorTelefono = persons.some(p => p.number === newPerson.number)
     const obtenerPersona = persons.find(p => p.name === newPerson.name)
 
     // Si tiene el mismo nombre
-    // TODO: que el nombre y el telefono sea de la misma persona
-    if (buscarPorNombre && !buscarPorTelefono) {
-
-      // Si tiene distinto telefono
-      
+      if (buscarPorNombre) {
+        // Si tiene distinto telefono
         if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
           api.modifyPhone(obtenerPersona.id, newPerson)
           .then(updatedPerson => {
-          // Actualizar el estado con la persona modificada
-          setPersons(
-            persons.map(p =>
-              p.id === personaExistente.id ? updatedPerson : p
+            // Actualizar el estado con la persona modificada
+            setPersons(
+              persons.map(p =>
+                p.id === obtenerPersona.id ? updatedPerson : p
+              )
             )
-          )
-        })
+          })
         }
-      
-    } else {
-      api.addNew(newPerson)
+        
+      } else {
+        api.addNew(newPerson)
         .then(p => setPersons(persons.concat(p)))
-    }
-    setNewName('')
-    setNewPhone('')
+      }
+    
+      setNewName('')
+      setNewPhone('')
   }
 
   // Funcion onClick delete person

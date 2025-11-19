@@ -1,41 +1,74 @@
-# 2.14: La Agenda Telefónica paso 9
+# 2.15*: La Agenda Telefónica paso 10
 
-Metodo en `api`:
+## Creamos en la API un nuevo endpoint con metodo `PUT`
 
-```jsx
-const deletePerson = (id) => {
-    const req = axios.delete(`${endpoint}/${id}`)
+```js
+// 4. Modify person's phone
+const modifyPhone = (id, obj) => {
+    const req = axios.put(`${endpoint}/${id}`, obj)
     return req.then(res => res.data)
 }
 ```
 
-En Mostrar persona, añadimos un boton para eliminar cada una de las personas.
-Cada persona tendra un boton para ser eliminada
+## Añadimos una variable
+
+Donde guardaremos el resultado de si existe alguna persona con ese nombre
 
 ```jsx
-const MostrarPersona = ({ name, phone, handleDelete }) => <p>{name} - {phone} <button onClick={handleDelete}>delete</button></p>
+const buscarPorNombre = persons.some(p => p.name === newPerson.name)
 ```
 
-Este boton recibe una función por parametro
+Añadimos otra donde nos devuelva el objeto de la persona, para así luego obtener el `id`
 
 ```jsx
-  const deletePerson = (p) => {
+const obtenerPersona = persons.find(p => p.name === newPerson.name)
+```
 
-    console.log("Objeto persona: ", p)
-    console.log("Nombre : ", p.name)
-    console.log("Id : ", p.id)
+Por último llamamos al metodo de la api para modificar y preguntamos al usuario si realmente quiere hacerlo
 
-    if (window.confirm("Do you want delete " + p.name + "?")) {
-      // Eliminar del backen
-      api.deletePerson(p.id)
-        .then(res => console.log("Persona eliminada: ", res))
-      // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
-      setPersons(persons.filter(per => per.id !== p.id))
-    }
+```jsx
+if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
+          api.modifyPhone(obtenerPersona.id, newPerson)
+            .then(updatedPerson => {
+              setPersons(persons.map(p =>
+                p.id === obtenerPersona.id ? updatedPerson : p)
+              )
+            })
+}
+```
+
+---
+## Funcion completa `addPerson()`
+
+```jsx
+// Funcion onSubmit add person
+  const addPerson = (e) => {
+    e.preventDefault()
+
+    const newPerson = { name: newName, number: newPhone }
+
+    const buscarPorNombre = persons.some(p => p.name === newPerson.name)
+    const obtenerPersona = persons.find(p => p.name === newPerson.name)
+
+    // Si tiene el mismo nombre
+      if (buscarPorNombre) {
+        // Si tiene distinto telefono
+        if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
+          api.modifyPhone(obtenerPersona.id, newPerson)
+          .then(updatedPerson => {
+            // Actualizar el estado con la persona modificada
+            setPersons(
+              persons.map(p =>
+                p.id === obtenerPersona.id ? updatedPerson : p
+              )
+            )
+          })
+        }
+      } else {
+        api.addNew(newPerson)
+        .then(p => setPersons(persons.concat(p)))
+      }
+      setNewName('')
+      setNewPhone('')
   }
-```
-
-> [!TIP]
-> Eliminamos tambien a la persona dentro del hook asi se refresque y ya no aparezca
-
-Y por ultimo le pasamos a la funcion el objeto personas para eliminar por id
+  ```
