@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
 import api from './services/api'
 
+// Componente para manejar errores
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+}
 // Componente para visualizar lista de telefono
 const MostrarPersona = ({ name, phone, handleDelete }) => <p>{name} - {phone} <button onClick={handleDelete}>delete</button></p>
 
@@ -26,7 +38,9 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
-  const [newSearch, setNewSearch] = useState('')
+  const [newSearch, setNewSearch] = useState()
+  // Manejar errores
+  const [errorMessage, setErrorMessage] = useState('')
 
   // form name
   const handleChangeName = (e) => setNewName(e.target.value)
@@ -58,10 +72,10 @@ const App = () => {
     const obtenerPersona = persons.find(p => p.name === newPerson.name)
 
     // Si tiene el mismo nombre
-      if (buscarPorNombre) {
-        // Si tiene distinto telefono
-        if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
-          api.modifyPhone(obtenerPersona.id, newPerson)
+    if (buscarPorNombre) {
+      // Si tiene distinto telefono
+      if (window.confirm(`Quieres modificar el numero de ${newName}`)) {
+        api.modifyPhone(obtenerPersona.id, newPerson)
           .then(updatedPerson => {
             // Actualizar el estado con la persona modificada
             setPersons(
@@ -70,15 +84,22 @@ const App = () => {
               )
             )
           })
-        }
-        
-      } else {
-        api.addNew(newPerson)
-        .then(p => setPersons(persons.concat(p)))
+          .catch(err => {
+            // Mensaje que aparece en pantalla
+            setErrorMessage(`${obtenerPersona.name} ha sido eliminado`)
+            // Espera tres segundos y lo setea a null para no mostrar nada
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 3000)
+          })
       }
-    
-      setNewName('')
-      setNewPhone('')
+
+    } else {
+      api.addNew(newPerson)
+        .then(p => setPersons(persons.concat(p)))
+    }
+    setNewName('')
+    setNewPhone('')
   }
 
   // Funcion onClick delete person
@@ -90,9 +111,19 @@ const App = () => {
     if (window.confirm("Do you want delete " + p.name + "?")) {
       // Eliminar del backen
       api.deletePerson(p.id)
-        .then(res => console.log("Persona eliminada: ", res))
+        .then(res => {
+        console.log("Persona eliminada: ", res)
+        setPersons(persons.filter(per => per.id !== p.id))
+        })
       // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
-      setPersons(persons.filter(per => per.id !== p.id))
+        .catch(err => {
+          // Mensaje que aparece en pantalla
+          setErrorMessage(`${obtenerPersona.name} ha sido eliminado`)
+          // Espera tres segundos y lo setea a null para no mostrar nada
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 3000)
+        })
     }
   }
 
@@ -100,6 +131,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Search newSearchValue={newSearch} handleChangeSearch={handleChangeSearch} />
       <h2>Add a new</h2>
       <Form addPerson={addPerson} newNameValue={newName} newPhoneValue={newPhone} handleChangeName={handleChangeName} handleChangePhone={handleChangePhone} />
