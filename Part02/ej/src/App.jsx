@@ -113,9 +113,11 @@ const App = () => {
       api.deletePerson(p.id)
         .then(res => {
         console.log("Persona eliminada: ", res)
+      // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
         setPersons(persons.filter(per => per.id !== p.id))
         })
-      // Eliminar del front (hook) - Con esto se actualiza el front sin refrescar
+        // TODO: 
+        // -[ ] Falta que funcione bien este metodo
         .catch(err => {
           // Mensaje que aparece en pantalla
           setErrorMessage(`${obtenerPersona.name} ha sido eliminado`)
